@@ -10,10 +10,10 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!--配置spring mvc-->
+    <!--本文件配置spring mvc-->
     <!--1,开启springmvc注解模式
     a.自动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
-    b.默认提供一系列的功能:数据绑定，数字和日期的format@NumberFormat,@DateTimeFormat
+    b.默认提供一系列的功能:数据绑定，数字和日期的format@NumberFormat,@DateTimeFormat，不用再考虑转换了
     c:xml,json的默认读写支持-->
     <mvc:annotation-driven/>
 
@@ -32,5 +32,5 @@
     </bean>
 
     <!--4:扫描web相关的bean-->
-    <context:component-scan base-package="cn.codingxiaxw.web"/>
+    <context:component-scan base-package="org.seckill.web"/>
 </beans>

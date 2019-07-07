@@ -25,6 +25,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                <!-- var代表当前条目的变量名称 ${}是EL表达式， -->
                 <c:forEach items="${list}" var="sk">
                     <tr>
                         <td>${sk.name}</td>
@@ -38,6 +39,7 @@
                         <td>
                             <fmt:formatDate value="${sk.createTime}" pattern="yyyy-MM-dd HH:mm:ss" />
                         </td>
+                       	<!-- 一个button，用来指向详情页 -->
                         <td><a class="btn btn-info" href="/seckill/${sk.seckillId}/detail" target="_blank">详情</a></td>
                     </tr>
                 </c:forEach>
@@ -50,7 +52,7 @@
 
 
 
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<!-- jQuery文件。bootstrap交互依赖jquery，务必在bootstrap.min.js 之前引入 -->
 <script src="http://apps.bdimg.com/libs/jquery/2.0.0/jquery.min.js"></script>
 
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
