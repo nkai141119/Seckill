@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>秒杀详情页</title>
+    <title>商品详情页</title>
     <%@include file="common/head.jsp" %>
     <!-- 这里采用静态包含的方式，直接将两个jsp合并为一个转化为一个servlet，动态包含则会先生成内部servlet然后将结果与外层servlet对接 -->
 </head>

@@ -7,6 +7,11 @@
   <version>1.0-SNAPSHOT</version>
   <name>seckill Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <!-- 防止由于现在不需要web.xml而产生的报错 -->
+  <properties>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>
+  
   <dependencies>
     <dependency>
       <!--3.0的junit是使用编程的方式来进行测试，而junit4是使用注解的方式来运行junit-->
@@ -152,5 +157,31 @@
 
   <build>
     <finalName>seckill</finalName>
-  </build>
+    <!-- 针对项目红叉的解决方案3 -->
+  <plugins>
+       <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <version>3.1</version>
+             <configuration>
+                 <source>1.7</source>     <!-- //如果是1.8，修改为1.8 -->
+                 <target>1.7</target>      <!-- //如果是1.8，修改为1.8 -->
+             </configuration>
+       </plugin>
+       <plugin>
+			<groupId>org.apache.tomcat.maven</groupId>
+			<artifactId>tomcat7-maven-plugin</artifactId>
+			<version>2.2</version>
+			<configuration>
+				<port>8080</port>
+				<uriEncoding>UTF-8</uriEncoding>
+				<server>tomcat7</server>
+				<!-- path这行是关键，避免使用项目名才能访问 -->
+				<path>/</path>
+				<contextReloadable>false</contextReloadable>
+				<useTestClasspath>false</useTestClasspath>
+			</configuration>
+		</plugin>
+  </plugins>
+</build>
 </project>

@@ -3,7 +3,7 @@
 
 var seckill = {
 
-    //封装秒杀相关ajax的url
+    //封装秒杀相关ajax的url,不希望在每一处都出现与后端交互的url；便于统一管理
     URL: {
         now: function () {
             return '/seckill/time/now';
@@ -30,12 +30,12 @@ var seckill = {
         //详情页初始化
         init: function (params) {
             //手机验证和登录,计时交互
-            //规划我们的交互流程
-            //在cookie中查找手机号
+            //规划交互流程
+            //手机号验证就不和后端进行交互了，这里不是重点。在cookie中查找手机号
             var userPhone = $.cookie('userPhone');
             //验证手机号
             if (!seckill.validatePhone(userPhone)) {
-                //绑定手机 控制输出
+                //绑定手机 控制输出 取出做好的module，默认是隐藏的，所以要先show
                 var killPhoneModal = $('#killPhoneModal');
                 killPhoneModal.modal({
                     show: true,//显示弹出层
@@ -52,7 +52,7 @@ var seckill = {
                         //验证通过　　刷新页面
                         window.location.reload();
                     } else {
-                        //todo 错误文案信息抽取到前端字典里
+                        //todo 显示错误信息，先隐藏，放入信息，再显示
                         $('#killPhoneMessage').hide().html('<label class="label label-danger">手机号错误!</label>').show(300);
                     }
                 });
@@ -79,8 +79,8 @@ var seckill = {
     handlerSeckill: function (seckillId, node) {
         //获取秒杀地址,控制显示器,执行秒杀
         node.hide().html('<button class="btn btn-primary btn-lg" id="killBtn">开始秒杀</button>');
-
-        $.get(seckill.URL.exposer(seckillId), {}, function (result) {
+        //这里必须是post请求！因为exposer只接受post
+        $.post(seckill.URL.exposer(seckillId), {}, function (result) {
             //在回调函数种执行交互流程
             if (result && result['success']) {
                 var exposer = result['data'];
@@ -129,7 +129,8 @@ var seckill = {
             seckillBox.html('秒杀结束!');
         } else if (nowTime < startTime) {
             //秒杀未开始,计时事件绑定
-            var killTime = new Date(startTime + 1000);//todo 防止时间偏移
+            var killTime = new Date();//todo 防止时间偏移
+            killTime.setTime(startTime+1000);
             seckillBox.countdown(killTime, function (event) {
                 //时间格式
                 var format = event.strftime('秒杀倒计时: %D天 %H时 %M分 %S秒 ');

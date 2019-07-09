@@ -3,14 +3,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>秒杀商品列表</title>
+    <title>售卖列表</title>
     <%@include file="common/head.jsp" %>
 </head>
 <body>
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading text-center">
-            <h2>秒杀列表</h2>
+            <h2>售卖列表</h2>
         </div>
         <div class="panel-body">
             <table class="table table-hover">
