@@ -69,18 +69,25 @@ public class SeckillController
                     method = RequestMethod.POST,
                     produces = {"application/json;charset=UTF-8"})//指定content-type，使返回的json能够以正确的格式被读取
     @ResponseBody//这个注解会使springmvc将seckilResult封装成json
-    public SeckillResult<Exposer> exposer(Long seckillId)
+    //这里的@pathVatiable千万不能忘了写否则seckillId就无法自动获取！！！然后就会NullpointerEsception。。。排查了好久才找到
+    public SeckillResult<Exposer> exposer(@PathVariable("seckillId") Long seckillId)
     {
         SeckillResult<Exposer> result;
         try{
+        	//logger.info("seckillId="+seckillId);
             Exposer exposer=seckillService.exportSeckillUrl(seckillId);
+            //logger.info("Exposer exposer=seckillService.exportSeckillUrl(seckillId);");
             result=new SeckillResult<Exposer>(true,exposer);
+            logger.info("exposer success!!");
         }catch (Exception e)
         {
             e.printStackTrace();
+            //logger.info("e.printStackTrace();");
+            //logger.info("result=new SeckillResult<Exposer>(false,e.getMessage());");
             result=new SeckillResult<Exposer>(false,e.getMessage());
         }
         //仅仅是说明exposer成功返回，但是不一定成功获取到了地址（md5）,详见exportSeckilUrl
+        //logger.info("return result;");
         return result;
     }
 
@@ -93,29 +100,36 @@ public class SeckillController
                                                    @CookieValue(value = "killPhone",required = false) Long phone)//phone是从用户的浏览器的cookie中获取
     //这里required=false，即使浏览器的phone为空，也不会报错，而是在以下的程序中处理
     //也可以采用springmvc valid验证，但是这里参数比较简单，所以就用直接的方式
-    {
+    {	
+    	logger.info("execute begin");
         if (phone==null)
         {
+        	logger.info("phone == null");
             return new SeckillResult<SeckillExecution>(false,"未注册");
         }
+        
         SeckillResult<SeckillExecution> result;
 
         try {
+        	logger.info("executeSeckill");
             SeckillExecution execution = seckillService.executeSeckill(seckillId, phone, md5);
             return new SeckillResult<SeckillExecution>(true, execution);
         }catch (RepeatKillException e1)
         {
+        	logger.info("repeatkill");
             SeckillExecution execution=new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
             return new SeckillResult<SeckillExecution>(true,execution);
             //请求成功，但是是重复秒杀
         }catch (SeckillCloseException e2)
         {
+        	logger.info("seckillclose");
             SeckillExecution execution=new SeckillExecution(seckillId, SeckillStatEnum.END);
             return new SeckillResult<SeckillExecution>(true,execution);
             //请求成功，但是秒杀已关闭
         }
         catch (Exception e)
         {
+        	logger.info("other exception");
             SeckillExecution execution=new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
             return new SeckillResult<SeckillExecution>(true,execution);
             //内部错误，但是也返回true

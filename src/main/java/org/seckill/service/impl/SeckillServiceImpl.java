@@ -53,9 +53,12 @@ public class SeckillServiceImpl implements SeckillService
 
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill=seckillDao.queryById(seckillId);
+        logger.info("Seckill seckill=seckillDao.queryById(seckillId);");
         if (seckill==null) //说明查不到这个秒杀产品的记录
         {
+        	logger.info("return new Exposer(false,seckillId);");
             return new Exposer(false,seckillId);
+            
         }
 
         //若是秒杀未开启
@@ -65,11 +68,13 @@ public class SeckillServiceImpl implements SeckillService
         Date nowTime=new Date();
         if (startTime.getTime()>nowTime.getTime() || endTime.getTime()<nowTime.getTime())
         {
+        	logger.info("return new Exposer(false,seckillId,nowTime.getTime(),startTime.getTime(),endTime.getTime());");
             return new Exposer(false,seckillId,nowTime.getTime(),startTime.getTime(),endTime.getTime());
         }
 
         //秒杀开启，返回秒杀商品的id、用给接口加密的md5
         String md5=getMD5(seckillId);
+        logger.info(" return new Exposer(true,md5,seckillId);");
         return new Exposer(true,md5,seckillId);
     }
 

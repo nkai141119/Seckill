@@ -1,17 +1,15 @@
 <%@page contentType="text/html; charset=UTF-8" language="java" %>
-<!-- 提取出的通用tag在这里引入 -->
 <%@include file="common/tag.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>秒杀详情页</title>
     <%@include file="common/head.jsp" %>
-    <!-- 这里采用静态包含的方式，直接将两个jsp合并为一个转化为一个servlet，动态包含则会先生成内部servlet然后将结果与外层servlet对接 -->
 </head>
 <body>
-<!-- 页面显示部分 -->
-<div class="container"><!-- 容器 -->
-    <div class="panel panel-default text-center"><!-- 面板组件 -->
+
+<div class="container">
+    <div class="panel panel-default text-center">
         <div class="pannel-heading">
             <h1>${seckill.name}</h1>
         </div>
