@@ -95,7 +95,7 @@ var seckill = {
                         //执行秒杀请求
                         //1.先禁用按钮
                         $(this).addClass('disabled');//,<-$(this)===('#killBtn')->
-                        //2.发送秒杀请求执行秒杀
+                        //2.发送秒杀请求执行秒杀---但是现实userPhone==null ，已解决，是因为seckillController中的参数名与cookie中的userPhone不一致
                         $.post(killUrl, {}, function (result) {
                             if (result && result['success']) {
                                 var killResult = result['data'];

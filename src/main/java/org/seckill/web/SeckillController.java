@@ -97,7 +97,8 @@ public class SeckillController
     @ResponseBody
     public SeckillResult<SeckillExecution> execute(@PathVariable("seckillId") Long seckillId,
                                                    @PathVariable("md5") String md5,
-                                                   @CookieValue(value = "killPhone",required = false) Long phone)//phone是从用户的浏览器的cookie中获取
+                                                   //这里原来写的是killPhone但是存储在浏览器的cookie里是userPhone所以必须保持统一，否则为null
+                                                   @CookieValue(value = "userPhone",required = false) Long phone)//phone是从用户的浏览器的cookie中获取
     //这里required=false，即使浏览器的phone为空，也不会报错，而是在以下的程序中处理
     //也可以采用springmvc valid验证，但是这里参数比较简单，所以就用直接的方式
     {	
