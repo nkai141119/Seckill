@@ -25,7 +25,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- var代表当前条目的变量名称 ${}是EL表达式， -->
+                <!-- var代表当前条目的变量名称是EL表达式 -->
                 <c:forEach items="${list}" var="sk">
                     <tr>
                         <td>${sk.name}</td>

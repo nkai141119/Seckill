@@ -1,7 +1,11 @@
 package org.seckill.service.impl;
 
+import java.util.Date;
+import java.util.List;
+
 import org.seckill.dao.SeckillDao;
 import org.seckill.dao.SuccessKilledDao;
+import org.seckill.dao.cache.RedisDao;
 import org.seckill.dto.Exposer;
 import org.seckill.dto.SeckillExecution;
 import org.seckill.entity.Seckill;
@@ -17,10 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by codingBoy on 16/11/28.
@@ -39,6 +39,10 @@ public class SeckillServiceImpl implements SeckillService
     //注入Service依赖，这里也是通过Mapper的方式，实现类是由mybatis实现，然后spring查找到，注入此处
     @Autowired //@Resource
     private SeckillDao seckillDao;
+    
+    //注入手动注册到spring容器中的redis的dao实现类--RedisDao
+    @Autowired
+    private RedisDao redisDao;
 
     @Autowired //@Resource
     private SuccessKilledDao successKilledDao; 
@@ -52,15 +56,30 @@ public class SeckillServiceImpl implements SeckillService
     }
 
     public Exposer exportSeckillUrl(long seckillId) {
-        Seckill seckill=seckillDao.queryById(seckillId);
-        logger.info("Seckill seckill=seckillDao.queryById(seckillId);");
-        if (seckill==null) //说明查不到这个秒杀产品的记录
-        {
-        	logger.info("return new Exposer(false,seckillId);");
-            return new Exposer(false,seckillId);
-            
-        }
-
+    	//以下是未使用redis进行优化的，直接查mysql的实现
+//        Seckill seckill=seckillDao.queryById(seckillId);
+//        logger.info("Seckill seckill=seckillDao.queryById(seckillId);");
+//        if (seckill==null) //说明查不到这个秒杀产品的记录
+//        {
+//        	logger.info("return new Exposer(false,seckillId);");
+//            return new Exposer(false,seckillId);
+//            
+//        }
+    	//使用redis进行优化，先查redis，没有再查mysql，并且把结果缓存到redis
+    	Seckill seckill = redisDao.getSeckill(seckillId);
+    	if(seckill == null){
+    		seckill = seckillDao.queryById(seckillId);
+    		if(seckillDao == null){
+    			//redis与mysql都查不到，放出空的Exposer
+    			logger.info("return new Exposer(false,seckillId);");
+    			return new Exposer(false,seckillId);
+    		}
+    		else{
+    			//将结果缓存到redis
+    			redisDao.putSeckill(seckill);
+    		}
+    	}
+    	
         //若是秒杀未开启
         Date startTime=seckill.getStartTime();
         Date endTime=seckill.getEndTime();
